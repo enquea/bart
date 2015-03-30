@@ -10,6 +10,7 @@ class Station(models.Model):
     abbr = models.CharField(max_length=10)
     long = models.FloatField()
     lat = models.FloatField()
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class ETD(models.Model):
@@ -23,6 +24,6 @@ class ETD(models.Model):
 
     location = models.ForeignKey('Station', related_name='etds_from')
     destination = models.ForeignKey('Station', related_name='etds_to')
-    minutes = models.IntegerField()
+    time_to_depart = models.DateTimeField()
     direction = models.CharField(max_length=1, choices=DIRECTIONS)
 
