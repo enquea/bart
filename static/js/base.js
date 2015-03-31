@@ -1,5 +1,6 @@
 $(function() {
     $.timeago.settings.allowFuture = true;
+    $.timeago.settings.allowPast = false;
 
     navigator.geolocation.getCurrentPosition(callAPI);
 
@@ -16,10 +17,12 @@ $(function() {
             etds.forEach(function(etd) {
                 var $tr = $("<tr>").append(
                     $("<td>").text(etd.destination),
-                    $("<td>").text($.timeago(etd.time_to_depart))
+                    $("<td>", {class:"timeago", title:etd.time_to_depart})
                 );
                 $("tbody").append($tr);
             });
+
+            $(".timeago").timeago();
         });
     }
 });

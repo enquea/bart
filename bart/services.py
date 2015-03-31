@@ -1,6 +1,7 @@
 import math
 import requests
 
+from django.conf import settings
 from django.utils import timezone
 from models import Station, ETD
 from xml.etree import ElementTree
@@ -80,7 +81,6 @@ def update_station_data(request, station):
     Only ask if our data is more than <2> minutes old
     """
     BART_API_ROOT = 'http://api.bart.gov/api/etd.aspx'
-    BART_API_KEY = 'MW9S-E7SL-26DU-VV8V'
 
     time_since_updated = timezone.now() - station.updated_at
     if time_since_updated.seconds > 120:
@@ -88,7 +88,7 @@ def update_station_data(request, station):
         params = {
             'cmd': 'etd',
             'orig': station.abbr.lower(),
-            'key': BART_API_KEY,
+            'key': settings.BART_API_KEY,
         }
 
         data = requests.get(BART_API_ROOT, params=params)
