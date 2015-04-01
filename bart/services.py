@@ -1,9 +1,8 @@
 import math
-import requests
 
-from django.conf import settings
 from django.utils import timezone
 from models import Station, ETD
+from tasks import get_bart_api_data
 from xml.etree import ElementTree
 
 
@@ -53,7 +52,7 @@ def get_new_etds(bart_data):
     """
     new_etds = []
 
-    root = ElementTree.fromstring(bart_data.content)
+    root = ElementTree.fromstring(bart_data)
     etds = root.find('station').findall('etd')
     for etd in etds:
         abbr = etd.find('abbreviation').text
@@ -75,23 +74,18 @@ def get_new_etds(bart_data):
     return new_etds
 
 
-def update_station_data(request, station):
+def update_station_data(station):
     """
     Update outgoing times from a station based on data from BART API
     Only ask if our data is more than <2> minutes old
     """
-    BART_API_ROOT = 'http://api.bart.gov/api/etd.aspx'
-
     time_since_updated = timezone.now() - station.updated_at
     if time_since_updated.seconds > 120:
 
-        params = {
-            'cmd': 'etd',
-            'orig': station.abbr.lower(),
-            'key': settings.BART_API_KEY,
-        }
+        data = get_bart_api_data.delay(station.abbr.lower())
 
-        data = requests.get(BART_API_ROOT, params=params)
         station.etds_from.all().delete()
-        station.etds_from = get_new_etds(data)
+        station.etds_from = get_new_etds(data.get())
         station.save()
+
+
