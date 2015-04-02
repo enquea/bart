@@ -5,7 +5,7 @@ from views import get_closest_station
 
 
 class BartAPITests(APITestCase):
-    fixtures = ['data']
+    fixtures = ['stations']
 
     def setUp(self):
         self.url = reverse('api')
