@@ -7,6 +7,7 @@ This app allows you to open a browser and view departure times from your closest
 The frontend is lightweight, using basic jQuery.
 
 The backend is powered by [Django](http://www.djangoproject.com/), hosted on Amazon EC2, and runs:
+
 1. gunicorn server
 2. celery to asynchronously fetch data from BART API
 3. supervisor to daemonize above processes
@@ -19,3 +20,5 @@ Click [here](http://52.11.27.205:9000/) to see the app, be sure to enable geoloc
 - Websockets to push updated times
 - Prettify frontend
 - GeoDjango for more efficient distance calculation
+
+Learn more about me [here](http://www.linkedin.com/in/wenbochang/en)
